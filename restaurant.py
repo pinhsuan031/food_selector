@@ -9,7 +9,7 @@ from playwright.async_api import async_playwright
 
 center = (25.0336646, 121.5438858) # 起始點為捷運大安站
 radius_m = 800 # 篩選半徑800公尺內店家
-search_query = "中式"
+search_query = "日式"
 
 # 生成2x2網格
 def generate_2x2_grid(center):
@@ -50,6 +50,7 @@ async def scrape_restaurant():
         search_box = page.locator('input[role="combobox"]')
         await search_box.wait_for()
         await search_box.fill(search_query)
+        await asyncio.sleep(1)
         await search_box.press("Enter")
         await page.wait_for_selector('div[role="feed"]')
 
@@ -59,13 +60,13 @@ async def scrape_restaurant():
         scroller = page.locator('div[role="feed"]')
         for _ in range(3):
             await asyncio.sleep(random.uniform(3.0, 5.0)) # 隨機延遲預防封鎖
-            await scroller.evaluate("node => node.scrollBy(0, 1500)")
+            await scroller.evaluate("node => node.scrollBy(0, 2000)")
             cards = await page.locator('div[role="article"]').count()
             print(f"目前偵測到 {cards} 家餐廳")
 
         lists = await page.query_selector_all('div[role="article"]')
 
-        for entry in lists[:1]:
+        for entry in lists[:5]:
             # 1. 店名與連結
             name_element = await entry.query_selector('a')
             name = await name_element.get_attribute('aria-label')
@@ -78,25 +79,22 @@ async def scrape_restaurant():
             lng = float(link.split("!4d")[1].split("!")[0])
             distance = haversine(center[0], center[1], lat, lng)
             print(distance)
-            if distance > 800:
-                continue
+            # if distance > 800:
+            #     continue
 
             # 3. 評分
             # 注意：Google 的 CSS Class 可能隨時變動，此處使用相對位置獲取
-            try:
-                rating_detail = await entry.query_selector_all('.fontBodyMedium > span > span')
-                rating = rating_detail[0].inner_text
-                print(rating)
-            except Exception as e:
-                print(e)
+            
+            rating_detail = await entry.query_selector_all('span.fontBodyMedium > span > span')
+            rating = await rating_detail[0].inner_text()
+            print(rating)
+
 
             # 4. 價位
-            try:
-                price_detail = await entry.query_selector('div.AJB7ye span span')
-                price = price_detail[2]
-                print(price)
-            except Exception as e:
-                print(e)
+            price_detail = await entry.query_selector_all('div.AJB7ye > span > span')
+            price = await price_detail[2].inner_text()
+            print(price)
+
 
 
         input("按 Enter 關閉瀏覽器...")
