@@ -112,7 +112,7 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                     "rating": rating, 
                     "price": price,
                     "link": link, 
-                    "distance": distance, 
+                    "distance": round(distance), 
                     "lat": lat,
                     "lng": lng
                 })
@@ -139,5 +139,9 @@ radius_m = eval(var[3])
 
 
 # 主程式
-restaurant_info = asyncio.run(scrape_restaurant(file_name, center, search_query, radius_m))
+try: 
+    restaurant_info = asyncio.run(scrape_restaurant(file_name, center, search_query, radius_m))
+except Exception as e:
+    print(e)
+
 write_to_csv(file_name, restaurant_info)
