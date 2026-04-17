@@ -3,7 +3,7 @@ import pandas as pd
 from playwright.async_api import async_playwright
 
 
-# 計算地圖上兩點距離的函式
+# 計算地圖上兩點距離
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371000
     dlat = math.radians(lat2 - lat1)
@@ -21,12 +21,12 @@ def get_seen_links(file_name):
         seen_links = set()
     return seen_links
 
-# 將查詢結果寫入csv檔的函式
+# 將查詢結果寫入 csv 檔
 def write_to_csv(file_name, info):
     file_path = f"{file_name}.csv"
     pd.DataFrame(info).to_csv(file_path, mode="a", index=False, encoding="utf-8-sig", header=not os.path.exists(file_path), lineterminator="\n")
 
-# 爬取資料的函式
+# 爬取資料
 async def scrape_restaurant(file_name, center, search_query, radius_m):
     async with async_playwright() as p:
 
@@ -36,7 +36,7 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
         page = await context.new_page()
 
         # 將連結導向中心點
-        url = f"https://www.google.com/maps/@{center[0]},{center[1]},16z"
+        url = f"https://www.google.com/maps/@{center[0]},{center[1]},16.5z"
         await page.goto(url)
         await asyncio.sleep(3)
 
@@ -55,18 +55,18 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
             await asyncio.sleep(3)
 
             # 模擬捲動以加載更多內容
-            print("正在加載地圖資料...")
+            print(f"搜尋關鍵字為 {query}")
             # 定位側欄容器
             scroller = page.locator('div[role="feed"]')
             for _ in range(5):
-                await scroller.evaluate("node => node.scrollBy(0, 1500)")
+                await scroller.evaluate("node => node.scrollBy(0, 2000)")
                 await asyncio.sleep(random.uniform(3.0, 5.0)) # 隨機延遲預防封鎖
-                cards = await page.locator('div[role="article"]').count()
-                print(f"目前偵測到 {cards} 家餐廳")
+                lists = await page.locator('div[role="article"]').count()
 
             # 抓取所有餐廳卡片
             lists = await page.query_selector_all('div[role="article"]')
             
+            # 抓取每間餐廳的資料
             for entry in lists:
                 # 1. 抓取店名與連結
                 name_element = await entry.query_selector('a')
@@ -76,15 +76,13 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                 if link in seen_links:
                     continue
                 seen_links.add(link)
-                print(name)
 
                 # 2. 從連結中解析座標並計算距離
                 # Google Maps 連結包含 !3d緯度!4d經度
                 lat = float(link.split("!3d")[1].split("!4d")[0])
                 lng = float(link.split("!4d")[1].split("!")[0])
                 distance = haversine(center[0], center[1], lat, lng)
-                print(distance)
-                # 如果距離 > 設定範圍則跳過
+                # 如果距離大於設定範圍則跳過
                 if distance > radius_m:
                     continue
 
@@ -94,7 +92,6 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                 try: 
                     rating_detail = await entry.query_selector_all('span.fontBodyMedium > span > span')
                     rating = await rating_detail[0].inner_text()
-                    print(rating)
                 except Exception as e:
                     rating = "無資料"
                     print(e)
@@ -104,7 +101,6 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                 try: 
                     price_detail = await entry.query_selector_all('div.AJB7ye > span > span')
                     price = await price_detail[2].inner_text()
-                    print(price)
                 except Exception as e:
                     price = "無資料"
                     print(e)
@@ -122,15 +118,24 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                 })
 
         
-        input("按 Enter 關閉瀏覽器...")
         return results
 
 
-# 變數
-file_name = "捷運大安站" # 想要存入的檔案名稱，建議使用起始點名稱
-center = (25.0336646, 121.5438858) # 起始點座標
-search_query = ["自助餐","健康餐","便當"] # 搜尋字詞
-radius_m = 800 # 篩選附近店家，單位為公尺，範圍自訂
+# 匯入變數
+with open("input.txt", mode="r", encoding="utf-8") as f:
+    var = f.readlines()
+
+# 想要存入的檔案名稱，建議使用起始點名稱
+file_name = var[0].strip()
+# 起始點座標
+center = var[1].strip().split(',')
+for i in range(2):
+    center[i] = eval(center[i])
+# 搜尋字詞
+search_query = var[2].strip().split(',')
+search_query = list(search_query)
+# 篩選自訂範圍內的店家，單位為公尺
+radius_m = eval(var[3])
 
 
 # 主程式
