@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Selector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+    <h1>餐廳篩選器</h1>
+
+    <form method="POST">
+        <h3>選擇餐廳類型：</h3>
+        {% for type in all_types %}
+        <label>
+            <input type="checkbox" name="restaurant_type" value="{{ type }}" {% if type in selected_types %} checked {%
+                endif %}>
+            {{ type }}
+        </label>
+        {% endfor %}
+        <button type="submit">篩選</button>
+    </form>
+
+    <hr>
+
+    <h3>餐廳清單：</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>店名</th>
+                <th>類型</th>
+                <th>評分</th>
+                <th>價位</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rest in restaurants %}
+            <tr>
+                <td>{{ rest.name }}</td>
+                <td>{{ rest.type }}</td>
+                <td>{{ rest.rating }}</td>
+                <td>{{ rest.price }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">找不到相符的餐廳</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>
