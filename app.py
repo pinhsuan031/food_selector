@@ -13,7 +13,7 @@ def get_all_types():
                 types.add(row['type'])
     except FileNotFoundError:
         pass
-    return list(types) # 轉回列表並排序，讓畫面顯示更整齊
+    return sorted(list(types)) # 轉回列表並排序，讓畫面顯示更整齊
 
 def get_restaurants(selected_types=None):
     restaurants = []
