@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import csv, random
 
 # __name__ 用來定位目前載入資料夾的位置
@@ -17,7 +17,7 @@ def get_all_types():
 
 def get_restaurants(selected_types=None):
     restaurants = []
-    with open('捷運大安站.csv', mode='r', encoding='utf-8') as f:
+    with open('捷運大安站.csv', mode='r', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not selected_types or row['type'] in selected_types:
@@ -29,28 +29,24 @@ def get_restaurants(selected_types=None):
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
     # 1. 動態取得所有類型
     all_types = get_all_types()
-    selected_types = request.form.getlist('restaurant_type')
-    
-    # 預設餐廳清單為空
+    return render_template('index.html', all_types=all_types)
+
+@app.route('/filter', methods=['POST'])
+def filter_restaurants():
+    data = request.json  # 接收前端傳來的 JSON 資料
+    selected_types = data.get('types', [])
+
     restaurants = []
-
-    # 當使用者是透過 POST (按下按鈕) 且 確實有勾選東西時，才抓取資料
-    if request.method == 'POST' and selected_types:
-
-        # 根據勾選篩選餐廳
+    if selected_types:
         selected_restaurants = get_restaurants(selected_types)
         k = min(3, len(selected_restaurants))
         restaurants = random.sample(selected_restaurants, k)
     
-    return render_template('index.html', 
-                           restaurants=restaurants, 
-                           all_types=all_types, 
-                           selected_types=selected_types)
-
+    return jsonify(restaurants) # 以 JSON 格式回傳餐廳清單
 
 
 if __name__ == "__main__":

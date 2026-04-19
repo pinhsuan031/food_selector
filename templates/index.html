@@ -15,45 +15,24 @@
 <body>
     <h1>餐廳篩選器</h1>
 
-    <form method="POST">
+    <div id="filter-form">
         <h3>選擇餐廳類型：</h3>
         {% for type in all_types %}
         <label>
-            <input type="checkbox" name="restaurant_type" value="{{ type }}" {% if type in selected_types %} checked {%
-                endif %}>
+            <input type="checkbox" class="type-checkbox" value="{{ type }}">
             {{ type }}
         </label>
         {% endfor %}
-        <button type="submit">篩選</button>
-    </form>
+        <button type="button" id="submit-btn">隨機推薦</button>
+    </div>
 
     <hr>
 
-    <h3>餐廳清單：</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>店名</th>
-                <th>類型</th>
-                <th>評分</th>
-                <th>價位</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rest in restaurants %}
-            <tr>
-                <td>{{ rest.name }}</td>
-                <td>{{ rest.type }}</td>
-                <td>{{ rest.rating }}</td>
-                <td>{{ rest.price }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="4">找不到相符的餐廳</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="result-section" style="display: none;">
+        <h3>為您推薦的餐廳：</h3>
+        <div id="restaurant-cards" class="card-wrapper"></div>
+
+    </div>
 
     <div id="map"></div>
 
@@ -61,6 +40,56 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="./static/map.js"></script>
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            // 1. 取得所有被勾選的類型
+            const checkboxes = document.querySelectorAll('.type-checkbox:checked');
+            const selectedTypes = Array.from(checkboxes).map(cb => cb.value);
+
+            if (selectedTypes.length === 0) {
+                alert('請至少選擇一個類型！');
+                return;
+            }
+
+            // 2. 使用 Fetch 發送 POST 請求到 /filter
+            fetch('/filter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ types: selectedTypes })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const cardWrapper = document.getElementById('restaurant-cards');
+                    const section = document.getElementById('result-section');
+
+                    // 清空舊的內容
+                    cardWrapper.innerHTML = '';
+
+                    if (data.length > 0) {
+                        // 3. 將回傳的 JSON 資料轉化為 HTML 標籤
+                        data.forEach(rest => {
+                            const card = `
+                    <div class="restaurant-card">
+                        <h3 class="name">${rest.name}</h3>
+                        <div class="type-tag">類型: ${rest.type}</div>
+                        <div class="price">價位: ${rest.price}</div>
+                        <div class="rating">評分: ${rest.rating}</div>
+                    </div>
+                `;
+                            cardWrapper.innerHTML += card;
+                        });
+                        section.style.display = 'block'; // 顯示結果
+                    } else {
+                        const message = `<p>找不到相符的餐廳</p>`;
+                        cardWrapper.innerHTML += message;
+                        section.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 
 </html>
