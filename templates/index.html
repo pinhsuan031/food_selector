@@ -14,23 +14,25 @@
 </head>
 
 
-<body>
+<body class="page-container">
     <h1>餐廳篩選器</h1>
 
     <div id="filter-form">
-        <h3>選擇餐廳類型：</h3>
-
-        <label>
-            <input type="checkbox" id="select-all"> 全選 </label>
-        <br>
-        {% for type in all_types %}
-        <label>
-            <input type="checkbox" class="type-checkbox" value="{{ type }}">
-            {{ type }}
-        </label>
-        {% endfor %}
-        <br>
-        <button type="button" id="submit-btn">隨機推薦</button>
+        <h3 class="section-header">選擇餐廳類型：</h3>
+        <div class="cuisine-grid-wrapper">
+            <div class="cuisine-grid">
+                <label>
+                    <input type="checkbox" id="select-all"> 全選
+                </label>
+                {% for type in all_types %}
+                <label>
+                    <input type="checkbox" class="type-checkbox" value="{{ type }}">
+                    {{ type }}
+                </label>
+                {% endfor %}
+            </div>
+            <button type="button" id="submit-btn">隨機推薦</button>
+        </div>
     </div>
 
     <hr>
