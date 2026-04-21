@@ -54,6 +54,6 @@ def filter_restaurants():
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',
-        debug=True, # 檔案更新網頁也會跟著更新
+        debug=False, # debug=True 檔案更新網頁也會跟著更新
         port=5000
     )
