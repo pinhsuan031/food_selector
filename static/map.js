@@ -1,6 +1,9 @@
-var map = L.map('map').setView([25.0333673, 121.5433068], 16.5);
+const lat = 25.0333673;
+const lng = 121.5433068;
 
-var marker = L.marker([25.0333673, 121.5433068]).addTo(map);
+var map = L.map('map').setView([lat, lng], 16.5);
+
+var marker = L.marker([lat, lng]).addTo(map);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
