@@ -21,11 +21,11 @@
         <h3 class="section-header">選擇餐廳類型：</h3>
         <div class="cuisine-grid-wrapper">
             <div class="cuisine-grid">
-                <label>
-                    <input type="checkbox" id="select-all"> 全選
+                <label class="checkbox-label">
+                    <input type="checkbox" class="type-checkbox" id="select-all"> 全選
                 </label>
                 {% for type in all_types %}
-                <label>
+                <label class="checkbox-label">
                     <input type="checkbox" class="type-checkbox" value="{{ type }}">
                     {{ type }}
                 </label>
@@ -37,14 +37,12 @@
 
     <hr>
 
-    <div id="result-section" style="display: none;">
-        <h3>為您推薦的餐廳：</h3>
-        <div id="restaurant-cards" class="card-wrapper"></div>
+    <h3>為您推薦的餐廳：</h3>
+    <div class="results-grid">
+        <div id="restaurant-cards" class="card-wrapper" style="display: none;"></div>
 
+        <div id="map"></div>
     </div>
-
-    <div id="map"></div>
-
 
 
     <script src="./static/map.js"></script>
@@ -97,7 +95,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const cardWrapper = document.getElementById('restaurant-cards');
-                    const section = document.getElementById('result-section');
+                    // const section = document.getElementById('result-section');
 
                     // 清空舊的內容
                     cardWrapper.innerHTML = '';
@@ -115,11 +113,11 @@
                 `;
                             cardWrapper.innerHTML += card;
                         });
-                        section.style.display = 'block'; // 顯示結果
+                        cardWrapper.style.display = 'block'; // 顯示結果
                     } else {
                         const message = `<p>找不到相符的餐廳</p>`;
+                        cardWrapper.style.display = 'block';
                         cardWrapper.innerHTML += message;
-                        section.style.display = 'block';
                     }
                 })
                 .catch(error => console.error('Error:', error));
