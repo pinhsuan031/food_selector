@@ -33,9 +33,14 @@ body {
     }
 }
 
+.title {
+    margin-top: 0rem;
+    margin-bottom: 2rem;
+}
+
 /* select type */
 #filter-form {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .section-header {
@@ -119,9 +124,10 @@ body {
 #submit-btn {
     background-color: var(--brand-orange);
     color: white;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    padding: 0.7rem 1.7rem;
+    width: 130px;
+    padding: 14px 28px;
     border: 1px solid var(--brand-orange);
     border-radius: 0.5rem;
     box-shadow: var(--shadow-soft);
@@ -177,21 +183,39 @@ body {
     border: 1px solid #f1f5f9;
     box-shadow: var(--shadow-soft);
     transition: box-shadow 0.2s;
+    margin-bottom: 2rem;
 }
 
 .restaurant-card:hover {
     box-shadow: var(--shadow-md);
 }
 
+a:link {
+    color: black;
+}
 
+a:visited {
+    color: black;
+}
 
+a:hover {
+    color: blue;
+}
 
+.name {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.type-tag {
+    margin-top: 0.25rem;
+
+}
 
 #map {
     grid-column: span 8 / span 8;
     position: relative;
     border-radius: 0.75rem;
     box-shadow: var(--shadow-soft);
-    /* width: 700px; */
     height: 500px;
 }
