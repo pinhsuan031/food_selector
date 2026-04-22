@@ -27,10 +27,6 @@ def get_restaurants(selected_types=None):
     return restaurants
 
 
-@app.route('/say_hello')  # Python 內建的裝飾詞，讓Flask監聽此URL 並return 返還結果
-def hello_world():
-    return 'Hello, World!'
-
 @app.route('/')
 def index():
     # 1. 動態取得所有類型

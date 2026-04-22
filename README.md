@@ -34,7 +34,7 @@
 
 ### 檔案架構
 - `static/`
-  - `map.js`: 初始化leaflet地圖
+  - `map.js`: 初始化 leaflet 地圖
   - `style.css`: `index.html` 引用的樣式表
 - `templates/`
   - `index.html`: 主頁面的網頁 HTML

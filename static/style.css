@@ -11,7 +11,7 @@
 }
 
 body {
-    /* font-family: '' */
+    font-family: 'Inter', sans-serif;
     background-color: var(--brand-cream);
     color: var(--text-main);
 }
@@ -165,7 +165,6 @@ body {
     }
 }
 
-
 .card-wrapper {
     grid-column: span 4;
     display: flex;
@@ -174,6 +173,12 @@ body {
     max-height: 600px;
     overflow-y: auto;
     padding-right: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .card-wrapper {
+        grid-column: span 8;
+    }
 }
 
 .restaurant-card {
@@ -213,7 +218,7 @@ a:hover {
 }
 
 #map {
-    grid-column: span 8 / span 8;
+    grid-column: span 8;
     position: relative;
     border-radius: 0.75rem;
     box-shadow: var(--shadow-soft);
