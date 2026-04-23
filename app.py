@@ -4,12 +4,12 @@ import csv, random
 # __name__ 用來定位目前載入資料夾的位置
 app = Flask(__name__)
 
-file_name = '捷運大安站.csv'
+file_name = '捷運大安站'
 
 def get_all_types():
     types = set() # 使用 set 確保裡面不會有重複的字串
     try:
-        with open(file_name, mode='r', encoding='utf-8') as f:
+        with open(f"data/{file_name}.csv", mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 types.add(row['type'])
@@ -19,7 +19,7 @@ def get_all_types():
 
 def get_restaurants(selected_types=None):
     restaurants = []
-    with open(file_name, mode='r', encoding='utf-8-sig') as f:
+    with open(f"data/{file_name}.csv", mode='r', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not selected_types or row['type'] in selected_types:

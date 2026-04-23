@@ -8,12 +8,7 @@
 - pandas
 - playwright
 - flask
-- 標準函式庫
-  - asyncio
-  - random
-  - math
-  - os
-  - csv
+- 標準函式庫: asyncio, random, math, os, re, csv
 
 ## 程式使用方法
 ### 啟動推薦網頁
@@ -33,6 +28,7 @@
  - 在 `static/map.js` 中修改 lat 與 lng 變數，變更地圖的中心點座標
 
 ### 檔案架構
+- `data/` : 放置 CSV 檔的資料夾
 - `static/`
   - `map.js`: 初始化 leaflet 地圖
   - `style.css`: `index.html` 引用的樣式表

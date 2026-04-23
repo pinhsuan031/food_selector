@@ -13,7 +13,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # 讀取已經寫入檔案的店家連結，避免寫入重複店家
 def get_seen_links(file_name):
-    file_path = f"{file_name}.csv"
+    file_path = f"data/{file_name}.csv"
     if os.path.exists(file_path):
         old_df = pd.read_csv(file_path)
         seen_links = set(old_df["link"])
@@ -23,7 +23,7 @@ def get_seen_links(file_name):
 
 # 將查詢結果寫入 csv 檔
 def write_to_csv(file_name, info):
-    file_path = f"{file_name}.csv"
+    file_path = f"data/{file_name}.csv"
     pd.DataFrame(info).to_csv(file_path, mode="a", index=False, encoding="utf-8-sig", header=not os.path.exists(file_path), lineterminator="\n")
 
 # 爬取資料
