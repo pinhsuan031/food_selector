@@ -1,4 +1,4 @@
-import asyncio, random, math, os
+import asyncio, random, math, os, re
 import pandas as pd
 from playwright.async_api import async_playwright
 
@@ -101,6 +101,10 @@ async def scrape_restaurant(file_name, center, search_query, radius_m):
                 try: 
                     price_detail = await entry.query_selector_all('div.AJB7ye > span > span')
                     price = await price_detail[2].inner_text()
+
+                    if bool(re.search(r"\d", price)) == False:
+                        price = "無資料"
+
                 except Exception as e:
                     price = "無資料"
                     print(e)
