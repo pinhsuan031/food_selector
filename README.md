@@ -27,7 +27,11 @@
  - 在 `app.py` 中修改 file_name 變數，指向新的 CSV 檔案
  - 在 `static/map.js` 中修改 lat 與 lng 變數，變更地圖的中心點座標
 
-### 檔案架構
+## 系統頁面展示
+![Food selector webpage](./images/food_selector_result.png)
+
+
+## 檔案架構
 - `data/` : 放置 CSV 檔的資料夾
 - `static/`
   - `map.js`: 初始化 leaflet 地圖
